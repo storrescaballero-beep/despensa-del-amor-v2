@@ -1,0 +1,38 @@
+.page { min-height: 100vh; background: var(--warm); }
+.header { background: linear-gradient(160deg, #1A237E 0%, #4A148C 50%, #880E4F 100%); padding: 52px 20px 24px; }
+.title { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.title span { font-style: italic; color: #CE93D8; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 700; }
+
+.main { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+.card { background: #fff; border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid #F5EDE3; }
+.cardTitle { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.cardSub { font-size: 12px; color: var(--text-light); font-weight: 600; margin-bottom: 10px; margin-top: -8px; }
+
+.optRow { display: flex; flex-wrap: wrap; gap: 8px; }
+.optBtn { padding: 8px 14px; border-radius: 20px; border: 1.5px solid #E8D8C8; background: var(--warm); color: var(--text-mid); font-size: 13px; font-weight: 700; transition: all 0.2s; }
+.optActive { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+.diasGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.diaBtn { padding: 10px 6px; border-radius: 10px; border: 1.5px solid #E8D8C8; background: var(--warm); color: var(--text-mid); font-size: 12px; font-weight: 700; transition: all 0.2s; text-align: center; }
+.diaActive { background: #FFF3E0; border-color: #F57C00; color: #F57C00; }
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.fieldLabel { display: block; font-size: 13px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+.fieldSub { font-size: 12px; color: var(--text-light); font-weight: 600; margin-bottom: 6px; margin-top: -4px; }
+
+.input { width: 100%; padding: 12px 14px; border: 1.5px solid #F8BBD9; border-radius: 10px; font-size: 15px; color: var(--text); background: var(--warm); outline: none; transition: border 0.2s; }
+.input:focus { border-color: var(--rose); background: #fff; }
+.textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #F8BBD9; border-radius: 10px; font-size: 14px; color: var(--text); background: var(--warm); outline: none; resize: vertical; transition: border 0.2s; line-height: 1.5; }
+.textarea:focus { border-color: var(--rose); background: #fff; }
+
+.saveBtn { width: 100%; padding: 16px; background: linear-gradient(135deg, #C2185B, #880E4F); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; transition: all 0.2s; margin-bottom: 16px; }
+.saveBtn:hover { opacity: 0.9; transform: translateY(-1px); }
+.loading { opacity: 0.7; pointer-events: none; }
+
+.savedNote { background: var(--green-light); border-radius: 14px; padding: 16px; font-size: 14px; font-weight: 700; color: var(--green); text-align: center; }
+
+.toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); background: #2C2C2A; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999; white-space: nowrap; animation: toastIn 0.3s ease; }
+@keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }

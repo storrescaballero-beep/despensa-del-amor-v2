@@ -1,0 +1,41 @@
+.page { min-height: 100vh; background: var(--warm); display: flex; flex-direction: column; }
+
+.header { background: linear-gradient(160deg, #1B5E20 0%, #2E7D32 60%, #388E3C 100%); padding: 52px 20px 16px; }
+.headerInner { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.avatar { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.title { font-size: 22px; font-weight: 900; color: #fff; line-height: 1.1; }
+.subtitle { font-size: 12px; color: rgba(255,255,255,0.75); font-weight: 700; }
+.statusDot { width: 10px; height: 10px; background: #A5D6A7; border-radius: 50%; margin-left: auto; animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.contexto { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; }
+
+.main { flex: 1; padding: 16px; max-width: 600px; margin: 0 auto; width: 100%; overflow-y: auto; padding-bottom: 140px; }
+
+.welcome { padding: 8px 0; }
+.welcomeCard { background: #fff; border-radius: 16px; padding: 18px; margin-bottom: 20px; border: 1px solid #C8E6C9; display: flex; gap: 12px; align-items: flex-start; }
+.welcomeEmoji { font-size: 28px; flex-shrink: 0; }
+.welcomeText { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.6; }
+.sugerenciasTitle { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 10px; }
+.sugerencias { display: flex; flex-direction: column; gap: 8px; }
+.sugerencia { padding: 12px 16px; background: #fff; border-radius: 12px; border: 1.5px solid #C8E6C9; font-size: 14px; font-weight: 600; color: #2E7D32; text-align: left; transition: all 0.2s; }
+.sugerencia:hover { background: #E8F5E9; border-color: #2E7D32; }
+
+.bubble { display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-end; }
+.bubbleUser { flex-direction: row-reverse; }
+.bubbleAvatar { width: 30px; height: 30px; background: #E8F5E9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.bubbleContent { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.bubbleContentAssistant { background: #fff; border: 1px solid #E8F5E9; border-bottom-left-radius: 4px; color: var(--text); }
+.bubbleContentUser { background: linear-gradient(135deg, #2E7D32, #1B5E20); color: #fff; border-bottom-right-radius: 4px; }
+
+.typing { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+.typing span { width: 8px; height: 8px; background: #A5D6A7; border-radius: 50%; animation: typingBounce 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+.inputBar { position: fixed; bottom: 66px; left: 0; right: 0; background: #fff; border-top: 1px solid #E8F5E9; padding: 12px 16px; display: flex; gap: 10px; max-width: 600px; margin: 0 auto; z-index: 90; padding-bottom: env(safe-area-inset-bottom, 12px); }
+.input { flex: 1; padding: 12px 16px; border: 1.5px solid #C8E6C9; border-radius: 24px; font-size: 15px; font-family: 'Lato', sans-serif; color: var(--text); background: var(--warm); outline: none; transition: border 0.2s; }
+.input:focus { border-color: #2E7D32; background: #fff; }
+.sendBtn { width: 44px; height: 44px; background: #2E7D32; color: #fff; border: none; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+.sendBtn:hover { background: #1B5E20; }
+.sendDisabled { opacity: 0.4; pointer-events: none; }

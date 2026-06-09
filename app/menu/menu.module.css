@@ -1,0 +1,92 @@
+.page { min-height: 100vh; background: var(--warm); }
+.header { background: linear-gradient(160deg, #4A148C 0%, #880E4F 50%, #C2185B 100%); padding: 52px 20px 24px; }
+.title { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.title span { font-style: italic; color: #F8BBD9; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 700; }
+.main { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+.heroCard { background: #fff; border-radius: 18px; padding: 18px; margin-bottom: 16px; border: 1px solid #FCE4EC; box-shadow: 0 4px 20px rgba(194,24,91,0.10); }
+.genBtn { width: 100%; padding: 14px; background: linear-gradient(135deg, #C2185B, #880E4F); color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; transition: all 0.2s; margin-bottom: 8px; }
+.genBtn:hover { opacity: 0.9; }
+.loading { opacity: 0.7; pointer-events: none; }
+.feedbackToggle { width: 100%; padding: 10px; background: transparent; border: 1.5px dashed #E8D8C8; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text-light); margin-bottom: 8px; transition: all 0.2s; }
+.feedbackToggle:hover { border-color: var(--rose); color: var(--rose); }
+.feedbackBox { margin-bottom: 8px; }
+.feedbackInput { width: 100%; padding: 12px 14px; border: 1.5px solid #F8BBD9; border-radius: 12px; font-size: 14px; color: var(--text); background: var(--warm); outline: none; resize: none; line-height: 1.5; font-family: 'Lato', sans-serif; }
+.feedbackInput:focus { border-color: var(--rose); background: #fff; }
+.actionRow { display: flex; gap: 8px; margin-bottom: 8px; }
+.addAllBtn { flex: 1; padding: 11px; background: var(--warm); color: var(--rose); border: 1.5px solid #F8BBD9; border-radius: 12px; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+.addAllBtn:hover { background: var(--rose-light); }
+.emailBtn { flex: 1; padding: 11px; background: var(--warm); color: #4A148C; border: 1.5px solid #E1BEE7; border-radius: 12px; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+.emailBtn:hover { background: #F3E5F5; }
+.weekLabel { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+
+.empty { text-align: center; padding: 52px 24px; }
+.emptyIcon { font-size: 56px; margin-bottom: 12px; }
+.emptyTitle { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text-mid); margin-bottom: 4px; }
+.emptySub { font-size: 14px; color: var(--text-light); font-weight: 600; }
+
+.loadingCards { padding: 8px 0; }
+.loadingLine { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-radius: 12px; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: var(--text-mid); opacity: 0; animation: fadeInLine 0.5s ease forwards; border: 1px solid #FCE4EC; }
+@keyframes fadeInLine { to { opacity: 1; } }
+.loadingDot { width: 10px; height: 10px; border-radius: 50%; background: var(--rose); animation: bounce 1s infinite; flex-shrink: 0; }
+@keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+.dayCard { background: #fff; border-radius: 16px; margin-bottom: 10px; border: 1px solid #F5EDE3; overflow: hidden; transition: opacity 0.3s; }
+.regenerating { opacity: 0.6; }
+.dayHeader { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--warm-mid); cursor: pointer; user-select: none; }
+.dayEmoji { font-size: 20px; flex-shrink: 0; }
+.dayInfo { flex: 1; display: flex; align-items: center; gap: 8px; }
+.dayName { font-size: 15px; font-weight: 700; }
+.tipoTag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.daySummary { display: flex; align-items: center; gap: 8px; }
+.kcalBadge { font-size: 12px; font-weight: 700; color: #F57C00; background: #FFF3E0; padding: 4px 10px; border-radius: 20px; }
+.expandIcon { font-size: 10px; color: var(--text-light); }
+
+.dayBody { padding: 16px; border-top: 1px solid #F5EDE3; }
+.nota { font-size: 13px; color: var(--rose); font-style: italic; font-weight: 600; margin-bottom: 14px; padding: 10px 14px; background: var(--rose-light); border-radius: 10px; }
+
+.mealBlock { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #F5EDE3; }
+.mealTitle { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 6px; }
+.mealPlato { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+
+.macrosRow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.macroBadge { display: flex; flex-direction: column; align-items: center; padding: 6px 10px; border-radius: 10px; border: 1.5px solid; min-width: 52px; }
+.macroVal { font-size: 14px; font-weight: 900; line-height: 1; }
+.macroLabel { font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-top: 2px; }
+
+.raciones { background: var(--warm); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.racion { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.racionNombre { font-size: 12px; font-weight: 800; color: var(--rose); text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; padding-top: 1px; }
+.racionVal { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; flex: 1; }
+
+.snackBlock { display: flex; align-items: flex-start; gap: 10px; background: #FFF8E1; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; }
+.snackIcon { font-size: 18px; flex-shrink: 0; }
+.snackText { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+.dayTotal { background: var(--warm-mid); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+.dayTotalTitle { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); display: block; margin-bottom: 8px; }
+
+.ingsBlock { padding-top: 14px; border-top: 1px solid #F5EDE3; margin-bottom: 12px; }
+.ingsTitle { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 8px; }
+.ings { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ingChip { padding: 5px 10px; background: var(--warm); border-radius: 20px; font-size: 12px; color: var(--text-mid); border: 1px solid #E8D8C8; }
+.ingChip strong { color: var(--rose); }
+.addDayBtn { width: 100%; padding: 11px; border-radius: 12px; border: 1.5px solid var(--rose); background: transparent; color: var(--rose); font-size: 13px; font-weight: 700; transition: all 0.2s; }
+.addDayBtn:hover { background: var(--rose-light); }
+.added { background: var(--rose) !important; color: #fff !important; border-color: var(--rose) !important; }
+
+.regenerateSection { margin-top: 12px; padding-top: 12px; border-top: 1px solid #F5EDE3; }
+.regenBtn { width: 100%; padding: 10px; background: transparent; border: 1.5px dashed #E8D8C8; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text-light); transition: all 0.2s; }
+.regenBtn:hover { border-color: #F57C00; color: #F57C00; background: #FFF8E1; }
+.instruccionBox { display: flex; flex-direction: column; gap: 8px; }
+.instruccionInput { width: 100%; padding: 12px 14px; border: 1.5px solid #F8BBD9; border-radius: 12px; font-size: 14px; color: var(--text); background: var(--warm); outline: none; resize: none; line-height: 1.5; font-family: 'Lato', sans-serif; }
+.instruccionInput:focus { border-color: var(--rose); background: #fff; }
+.instruccionBtns { display: flex; gap: 8px; }
+.regenConfirmBtn { flex: 2; padding: 11px; background: linear-gradient(135deg, #F57C00, #E65100); color: #fff; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+.regenConfirmBtn:hover { opacity: 0.9; }
+.regenCancelBtn { flex: 1; padding: 11px; background: transparent; border: 1.5px solid #E8D8C8; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text-light); transition: all 0.2s; }
+.regenLoading { display: flex; align-items: center; gap: 12px; padding: 16px; font-size: 14px; font-weight: 700; color: var(--text-mid); }
+
+.toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); background: #2C2C2A; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999; white-space: nowrap; animation: toastIn 0.3s ease; }
+@keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }

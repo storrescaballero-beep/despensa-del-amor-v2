@@ -1,0 +1,13 @@
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #F5EDE3;
+  display: flex; z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 8px 4px 12px; color: #A8887A; transition: color 0.2s; gap: 2px;
+}
+.active { color: #C2185B; }
+.icon { font-size: 20px; line-height: 1; }
+.label { font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
