@@ -3,84 +3,73 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const PROTEINAS = ['pollo','ternera','cerdo','pescado blanco','salmon','atun','huevos','legumbres','pavo','cordero']
-const SNACKS_LIST = [
-  'aceitunas variadas y chochos lupinos',
-  'frutos secos mixtos y uvas',
-  'hummus con palitos de zanahoria',
-  'yogur griego con miel y nueces',
-  'jamon iberico y queso manchego',
-  'tosta con aguacate y tomate',
-  'manzana con mantequilla de almendras',
-  'pepino con tzatziki',
-  'datiles con almendras',
-  'platano con chocolate negro',
-]
+const PROTEINAS = ['pollo','ternera','cerdo','pescado','salmon','atun','huevos','legumbres','pavo','cordero']
+const SNACKS = ['aceitunas y chochos','frutos secos y uva','hummus con zanahoria','yogur griego con nueces','jamon y queso manchego','tosta de aguacate','manzana con almendras','pepino con tzatziki']
 
-function shuffle<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5)
-}
+function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 0.5) }
 
 function extractJSON(text: string): any {
   let clean = text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim()
-  const start = clean.indexOf('{')
-  const end = clean.lastIndexOf('}')
-  if (start === -1 || end === -1) throw new Error('No JSON found')
+  const start = clean.indexOf('[')
+  const end = clean.lastIndexOf(']')
+  if (start === -1 || end === -1) throw new Error('No JSON array found')
   return JSON.parse(clean.substring(start, end + 1))
+}
+
+function buildPrompt(dias: string[], yo: string, pareja: string, proteinas: string, snacks: string, diasFaciles: string, prefs: string, evitar: string, fb: string, seed: number) {
+  return `Nutricionista chef. Menu para ${dias.join(',')} seed${seed}.
+${yo}:1.82m,85kg,atletico,2900kcal,180gprot. ${pareja}:1.71m,52kg,atletica,1900kcal,110gprot.
+Dias faciles:${diasFaciles}. Prefs:${prefs}. Evitar:${evitar}. ${fb}
+Proteinas sin repetir:${proteinas}. Snacks:${snacks}.
+Desayuno diferente cada dia. Sabado y Domingo elaborado.
+
+Responde SOLO con array JSON sin texto antes ni despues:
+[{"dia":"${dias[0]}","tipo":"facil","nota":"frase corta carinosa","desayuno":{"plato":"nombre corto","kcal":400,"proteinas":20,"carbos":45,"grasas":12},"comida":{"plato":"nombre corto","kcal":650,"proteinas":45,"carbos":60,"grasas":20,"racion_yo":"200g+guarni","racion_pareja":"130g+guarni"},"snack":"snack corto","cena":{"plato":"nombre corto","kcal":400,"proteinas":30,"carbos":35,"grasas":12,"racion_yo":"racion","racion_pareja":"racion"},"ingredientes":[{"nombre":"Pollo","cantidad_total":"330g","categoria":"carne"},{"nombre":"Arroz","cantidad_total":"250g","categoria":"despensa"}]}]
+Genera exactamente ${dias.length} dias con este formato. SIN texto fuera del array.`
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const { rutinas, feedback } = body
 
-  const nombreYo = rutinas?.nombre_yo || 'Sergio'
-  const nombrePareja = rutinas?.nombre_pareja || 'Olivia'
-  const proteinasOrden = shuffle(PROTEINAS).join(', ')
-  const snacksSugeridos = shuffle(SNACKS_LIST).slice(0, 7).join(' | ')
-  const seed = Math.floor(Math.random() * 10000)
-  const fechaHoy = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-  const diasFaciles = rutinas?.dias_faciles?.join(', ') || 'ninguno'
-  const preferencias = rutinas?.preferencias || 'cocina espanola y mediterranea variada'
-  const evitar = rutinas?.evitar || 'nada en especial'
-  const diaCompra = rutinas?.dia_compra || 'sabado'
-  const cocinero = rutinas?.cocinero || 'uno de los dos'
-  const feedbackLinea = feedback ? 'FEEDBACK: ' + feedback : ''
+  const yo = rutinas?.nombre_yo || 'Sergio'
+  const pareja = rutinas?.nombre_pareja || 'Olivia'
+  const seed = Math.floor(Math.random() * 9999)
+  const fecha = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+  const proteinas = shuffle(PROTEINAS)
+  const snacks = shuffle(SNACKS).slice(0, 7).join('|')
+  const diasFaciles = rutinas?.dias_faciles?.join(',') || 'ninguno'
+  const prefs = rutinas?.preferencias || 'cocina espanola'
+  const evitar = rutinas?.evitar || 'nada'
+  const fb = feedback ? 'APLICA: ' + feedback : ''
 
-  const prompt = `Eres nutricionista y chef espanol experto. Genera menu semanal UNICO (seed: ${seed}).
-
-PERFIL:
-- ${nombreYo}: 1.82m, 85kg, atletico. 2900 kcal/dia, 180g proteina/dia.
-- ${nombrePareja}: 1.71m, 52kg, delgada atletica. 1900 kcal/dia, 110g proteina/dia.
-- Quien cocina: ${cocinero}
-- Dias faciles: ${diasFaciles}
-- Preferencias: ${preferencias}
-- Evitar: ${evitar}
-- Dia compra: ${diaCompra}
-${feedbackLinea}
-
-REGLAS:
-- DESAYUNO variado cada dia
-- SNACK rotando: ${snacksSugeridos}
-- Proteinas sin repetir: ${proteinasOrden}
-- Dias faciles: max 25 min
-- Raciones diferentes por persona
-- Categorias: fruta, carne, lacteos, panaderia, despensa, bebidas, limpieza, otros
-
-Responde UNICAMENTE con JSON valido, sin texto antes ni despues, sin backticks:
-{"menu":[{"dia":"Lunes","tipo":"facil","nota":"nota carinosa","desayuno":{"plato":"descripcion","kcal":420,"proteinas":22,"carbos":48,"grasas":14},"comida":{"plato":"descripcion","kcal":680,"proteinas":48,"carbos":62,"grasas":22,"racion_yo":"200g pollo","racion_pareja":"130g pollo"},"snack":"snack descripcion","cena":{"plato":"descripcion","kcal":420,"proteinas":32,"carbos":35,"grasas":14,"racion_yo":"racion yo","racion_pareja":"racion pareja"},"ingredientes":[{"nombre":"Pechuga de pollo","cantidad_total":"330g","categoria":"carne"}]}],"generado_para":"fecha"}
-Genera los 7 dias completos con la misma estructura.`
+  const lote1 = ['Lunes', 'Martes', 'Miercoles', 'Jueves']
+  const lote2 = ['Viernes', 'Sabado', 'Domingo']
+  const prot1 = proteinas.slice(0, 5).join(',')
+  const prot2 = proteinas.slice(5).join(',')
 
   try {
-    const msg = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 6000,
-      messages: [{ role: 'user', content: prompt }]
-    })
-    const text = msg.content.map((b: any) => b.text || '').join('')
-    const parsed = extractJSON(text)
-    if (!parsed.menu || !Array.isArray(parsed.menu)) throw new Error('Invalid menu structure')
-    parsed.generado_para = 'Semana del ' + fechaHoy
-    return NextResponse.json(parsed)
+    const [r1, r2] = await Promise.all([
+      client.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: buildPrompt(lote1, yo, pareja, prot1, snacks, diasFaciles, prefs, evitar, fb, seed) }]
+      }),
+      client.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 3000,
+        messages: [{ role: 'user', content: buildPrompt(lote2, yo, pareja, prot2, snacks, diasFaciles, prefs, evitar, fb, seed + 1) }]
+      })
+    ])
+
+    const text1 = r1.content.map((b: any) => b.text || '').join('')
+    const text2 = r2.content.map((b: any) => b.text || '').join('')
+    const dias1 = extractJSON(text1)
+    const dias2 = extractJSON(text2)
+    const fixDia = (d: string) => d.replace('Miercoles','Miércoles').replace('Sabado','Sábado')
+    const allDias = [...dias1, ...dias2].map((d: any) => ({ ...d, dia: fixDia(d.dia) }))
+
+    return NextResponse.json({ menu: allDias, generado_para: 'Semana del ' + fecha })
   } catch (e: any) {
     console.error('Menu error:', e.message)
     return NextResponse.json({ error: e.message }, { status: 500 })
