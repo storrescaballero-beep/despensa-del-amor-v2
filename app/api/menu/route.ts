@@ -73,7 +73,7 @@ Genera los 7 dias completos con la misma estructura.`
   try {
     const msg = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 4000,
+      max_tokens: 6000,
       messages: [{ role: 'user', content: prompt }]
     })
     const text = msg.content.map((b: any) => b.text || '').join('')
