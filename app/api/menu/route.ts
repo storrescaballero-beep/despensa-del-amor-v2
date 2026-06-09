@@ -21,6 +21,14 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5)
 }
 
+function extractJSON(text: string): any {
+  let clean = text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim()
+  const start = clean.indexOf('{')
+  const end = clean.lastIndexOf('}')
+  if (start === -1 || end === -1) throw new Error('No JSON found')
+  return JSON.parse(clean.substring(start, end + 1))
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const { rutinas, feedback } = body
@@ -36,13 +44,13 @@ export async function POST(req: NextRequest) {
   const evitar = rutinas?.evitar || 'nada en especial'
   const diaCompra = rutinas?.dia_compra || 'sabado'
   const cocinero = rutinas?.cocinero || 'uno de los dos'
-  const feedbackLinea = feedback ? 'FEEDBACK DEL USUARIO (aplicar obligatoriamente): ' + feedback : ''
+  const feedbackLinea = feedback ? 'FEEDBACK: ' + feedback : ''
 
-  const prompt = `Eres nutricionista y chef espanol experto. Genera un menu semanal UNICO y VARIADO (seed: ${seed}).
+  const prompt = `Eres nutricionista y chef espanol experto. Genera menu semanal UNICO (seed: ${seed}).
 
 PERFIL:
-- ${nombreYo}: hombre, 1.82m, 85kg, atletico. Necesita 2900 kcal/dia, 180g proteina/dia.
-- ${nombrePareja}: mujer, 1.71m, 52kg, delgada atletica. Necesita 1900 kcal/dia, 110g proteina/dia.
+- ${nombreYo}: 1.82m, 85kg, atletico. 2900 kcal/dia, 180g proteina/dia.
+- ${nombrePareja}: 1.71m, 52kg, delgada atletica. 1900 kcal/dia, 110g proteina/dia.
 - Quien cocina: ${cocinero}
 - Dias faciles: ${diasFaciles}
 - Preferencias: ${preferencias}
@@ -51,47 +59,30 @@ PERFIL:
 ${feedbackLinea}
 
 REGLAS:
-1. DESAYUNO variado cada dia (tostadas, avena, huevos, yogur granola, tortitas proteicas, bocadillo, batido)
-2. COMIDA: plato principal con guarni cion
-3. SNACK rotando: ${snacksSugeridos}
-4. CENA mas ligera que comida
-5. Proteinas sin repetir en este orden: ${proteinasOrden}
-6. Dias faciles: max 25 min
-7. Fines de semana: elaborado y especial
-8. Raciones diferentes por persona
-9. Ingredientes = suma ambas raciones con categoria correcta
-10. Nota carinosa diferente cada dia
+- DESAYUNO variado cada dia
+- SNACK rotando: ${snacksSugeridos}
+- Proteinas sin repetir: ${proteinasOrden}
+- Dias faciles: max 25 min
+- Raciones diferentes por persona
+- Categorias: fruta, carne, lacteos, panaderia, despensa, bebidas, limpieza, otros
 
-CATEGORIAS: fruta, carne, lacteos, panaderia, despensa, bebidas, limpieza, otros
-
-Responde SOLO JSON valido sin backticks:
-{
-  "menu": [
-    {
-      "dia": "Lunes",
-      "tipo": "facil",
-      "nota": "nota carinosa",
-      "desayuno": { "plato": "descripcion", "kcal": 420, "proteinas": 22, "carbos": 48, "grasas": 14 },
-      "comida": { "plato": "descripcion", "kcal": 680, "proteinas": 48, "carbos": 62, "grasas": 22, "racion_yo": "200g pollo + 150g arroz", "racion_pareja": "130g pollo + 100g arroz" },
-      "snack": "descripcion snack",
-      "cena": { "plato": "descripcion", "kcal": 420, "proteinas": 32, "carbos": 35, "grasas": 14, "racion_yo": "racion sergio", "racion_pareja": "racion olivia" },
-      "ingredientes": [{ "nombre": "Pechuga de pollo", "cantidad_total": "330g", "categoria": "carne" }]
-    }
-  ],
-  "generado_para": "Semana del ${fechaHoy}"
-}
-7 dias completos Lunes a Domingo.`
+Responde UNICAMENTE con JSON valido, sin texto antes ni despues, sin backticks:
+{"menu":[{"dia":"Lunes","tipo":"facil","nota":"nota carinosa","desayuno":{"plato":"descripcion","kcal":420,"proteinas":22,"carbos":48,"grasas":14},"comida":{"plato":"descripcion","kcal":680,"proteinas":48,"carbos":62,"grasas":22,"racion_yo":"200g pollo","racion_pareja":"130g pollo"},"snack":"snack descripcion","cena":{"plato":"descripcion","kcal":420,"proteinas":32,"carbos":35,"grasas":14,"racion_yo":"racion yo","racion_pareja":"racion pareja"},"ingredientes":[{"nombre":"Pechuga de pollo","cantidad_total":"330g","categoria":"carne"}]}],"generado_para":"fecha"}
+Genera los 7 dias completos con la misma estructura.`
 
   try {
     const msg = await client.messages.create({
-      model: 'claude-opus-4-5',
+      model: 'claude-haiku-4-5',
       max_tokens: 4000,
       messages: [{ role: 'user', content: prompt }]
     })
     const text = msg.content.map((b: any) => b.text || '').join('')
-    const clean = text.replace(/```json|```/g, '').trim()
-    return NextResponse.json(JSON.parse(clean))
+    const parsed = extractJSON(text)
+    if (!parsed.menu || !Array.isArray(parsed.menu)) throw new Error('Invalid menu structure')
+    parsed.generado_para = 'Semana del ' + fechaHoy
+    return NextResponse.json(parsed)
   } catch (e: any) {
+    console.error('Menu error:', e.message)
     return NextResponse.json({ error: e.message }, { status: 500 })
   }
 }
