@@ -8,46 +8,50 @@ export async function POST(req: NextRequest) {
   const { dia, menuActual, rutinas, instruccion } = body
 
   const nombreYo = rutinas?.nombre_yo || 'Sergio'
-  const nombrePareja = rutinas?.nombre_pareja || 'Persona 2'
+  const nombrePareja = rutinas?.nombre_pareja || 'Olivia'
+  const preferencias = rutinas?.preferencias || 'cocina espanola y mediterranea'
+  const evitar = rutinas?.evitar || 'nada'
 
-  const otrosPlatos = (menuActual || [])
-    .filter((d: any) => d.dia !== dia)
-    .map((d: any) => `${d.dia}: comida=${d.comida?.plato || ''}, cena=${d.cena?.plato || ''}`)
-    .join('\n')
+  const otrosPlatos = Array.isArray(menuActual)
+    ? menuActual
+        .filter((d: any) => d.dia !== dia)
+        .map((d: any) => d.dia + ': comida=' + (d.comida?.plato || '') + ', cena=' + (d.cena?.plato || ''))
+        .join('\n')
+    : ''
+
+  const instruccionFinal = instruccion || 'Propón algo completamente diferente y variado'
+
+  const prompt = `Eres nutricionista y chef. Regenera SOLO el dia ${dia}.
+
+INSTRUCCION: ${instruccionFinal}
+
+OTROS DIAS (no repetir proteinas):
+${otrosPlatos}
+
+DATOS:
+- ${nombreYo}: 1.82m, 85kg, atletico, 2900 kcal/dia
+- ${nombrePareja}: 1.71m, 52kg, atletica delgada, 1900 kcal/dia
+- Preferencias: ${preferencias}
+- Evitar: ${evitar}
+
+Responde SOLO JSON sin backticks:
+{
+  "dia": "${dia}",
+  "tipo": "facil",
+  "nota": "nota carinosa",
+  "desayuno": { "plato": "descripcion", "kcal": 400, "proteinas": 20, "carbos": 45, "grasas": 12 },
+  "comida": { "plato": "descripcion", "kcal": 650, "proteinas": 45, "carbos": 60, "grasas": 20, "racion_yo": "racion ${nombreYo}", "racion_pareja": "racion ${nombrePareja}" },
+  "snack": "snack con cantidad",
+  "cena": { "plato": "descripcion", "kcal": 420, "proteinas": 30, "carbos": 35, "grasas": 14, "racion_yo": "racion ${nombreYo}", "racion_pareja": "racion ${nombrePareja}" },
+  "ingredientes": [{ "nombre": "ingrediente", "cantidad_total": "cantidad", "categoria": "categoria" }]
+}`
 
   try {
     const msg = await client.messages.create({
       model: 'claude-opus-4-5',
       max_tokens: 1500,
-      messages: [{
-        role: 'user',
-        content: `Eres nutricionista y chef. Regenera SOLO el día ${dia} del menú semanal.
-
-INSTRUCCIÓN: ${instruccion || 'Propón algo completamente diferente y variado'}
-
-OTROS DÍAS YA ASIGNADOS (no repetir proteínas principales):
-${otrosPlatos}
-
-DATOS PAREJA:
-- ${nombreYo}: 1,82m, 85kg, atlético, necesita ~2900 kcal/día, ~180g proteína
-- ${nombrePareja}: 1,71m, 52kg, atlética delgada, necesita ~1900 kcal/día, ~110g proteína
-- Preferencias: ${rutinas?.preferencias || 'cocina española y mediterránea'}
-- Evitar: ${rutinas?.evitar || 'nada'}
-
-Responde SOLO con JSON válido sin backticks ni texto extra:
-{
-  "dia": "${dia}",
-  "tipo": "facil",
-  "nota": "nota cariñosa diferente",
-  "desayuno": { "plato": "descripción desayuno", "kcal": 400, "proteinas": 20, "carbos": 45, "grasas": 12 },
-  "comida": { "plato": "nombre plato", "kcal": 650, "proteinas": 45, "carbos": 60, "grasas": 20, "racion_yo": "ración ${nombreYo}", "racion_pareja": "ración ${nombrePareja}" },
-  "snack": "snack apetecible con cantidad",
-  "cena": { "plato": "nombre plato", "kcal": 420, "proteinas": 30, "carbos": 35, "grasas": 14, "racion_yo": "ración ${nombreYo}", "racion_pareja": "ración ${nombrePareja}" },
-  "ingredientes": [{ "nombre": "ingrediente", "cantidad_total": "cantidad", "categoria": "categoria" }]
-}`
-      }]
+      messages: [{ role: 'user', content: prompt }]
     })
-
     const text = msg.content.map((b: any) => b.text || '').join('')
     const clean = text.replace(/```json|```/g, '').trim()
     return NextResponse.json(JSON.parse(clean))
