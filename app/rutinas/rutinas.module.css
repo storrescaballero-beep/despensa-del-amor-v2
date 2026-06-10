@@ -36,3 +36,9 @@
 
 .toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); background: #2C2C2A; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999; white-space: nowrap; animation: toastIn 0.3s ease; }
 @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(8px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+
+.headerRow { display: flex; justify-content: space-between; align-items: flex-start; }
+.logoutBtn { background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 13px; font-weight: 700; padding: 8px 14px; border-radius: 20px; font-family: 'Lato', sans-serif; }
+.logoutBtn:hover { background: rgba(255,255,255,0.3); }
+.inviteCode { background: var(--rose-light); border: 2px solid var(--rose); border-radius: 14px; padding: 16px; text-align: center; font-size: 28px; font-weight: 900; letter-spacing: 5px; color: var(--rose); font-family: monospace; }
+.loadingBtn { opacity: 0.7; pointer-events: none; }

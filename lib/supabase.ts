@@ -12,6 +12,7 @@ export type Item = {
   quantity: number
   done: boolean
   added_by: string
+  hogar_id: string
   created_at: string
 }
 
@@ -60,4 +61,19 @@ export type Rutinas = {
   email_yo: string
   email_pareja: string
   dia_compra: string
+  supermercado: string
+}
+
+export type Perfil = {
+  id: string
+  hogar_id: string
+  nombre: string
+  email: string
+  rol: string
+}
+
+export type Hogar = {
+  id: string
+  nombre: string
+  invite_code: string
 }

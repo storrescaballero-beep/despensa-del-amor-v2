@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { supabase, type Item } from '../../lib/supabase'
+import { getHogarId } from '../../lib/auth'
 import BottomNav from '../../components/BottomNav'
+import { useRouter } from 'next/navigation'
 import styles from './lista.module.css'
 
 const CATS = [
@@ -24,20 +26,35 @@ export default function Lista() {
   const [toast, setToast] = useState('')
   const [showAdd, setShowAdd] = useState(false)
   const [nombres, setNombres] = useState({ yo: 'Yo', pareja: 'Mi pareja' })
+  const [hogarId, setHogarId] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
-    loadItems()
-    loadNombres()
-    const channel = supabase
-      .channel('items-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, loadItems)
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
+    initAuth()
   }, [])
 
-  async function loadItems() {
-    const { data } = await supabase.from('items').select('*').order('created_at', { ascending: true })
+  async function initAuth() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/login'); return }
+
+    const hId = await getHogarId()
+    if (!hId) { router.push('/onboarding'); return }
+    setHogarId(hId)
+
+    loadItems(hId)
+    loadNombres()
+
+    const channel = supabase
+      .channel('items-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, () => loadItems(hId))
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }
+
+  async function loadItems(hId: string) {
+    const { data } = await supabase.from('items').select('*').eq('hogar_id', hId).order('created_at', { ascending: true })
     if (data) setItems(data)
   }
 
@@ -45,10 +62,7 @@ export default function Lista() {
     const res = await fetch('/api/rutinas')
     if (res.ok) {
       const data = await res.json()
-      if (data) setNombres({
-        yo: data.nombre_yo || 'Yo',
-        pareja: data.nombre_pareja || 'Mi pareja'
-      })
+      if (data) setNombres({ yo: data.nombre_yo || 'Yo', pareja: data.nombre_pareja || 'Mi pareja' })
     }
   }
 
@@ -56,8 +70,8 @@ export default function Lista() {
 
   async function addItem() {
     const name = newName.trim()
-    if (!name) return
-    await supabase.from('items').insert({ name, category: newCat, quantity: 1, done: false, added_by: addedBy })
+    if (!name || !hogarId) return
+    await supabase.from('items').insert({ name, category: newCat, quantity: 1, done: false, added_by: addedBy, hogar_id: hogarId })
     setNewName('')
     setShowAdd(false)
     showToast('✓ Añadido')
@@ -79,7 +93,7 @@ export default function Lista() {
     const ids = items.filter(i => i.done).map(i => i.id)
     if (!ids.length) return
     await supabase.from('items').delete().in('id', ids)
-    showToast(`🗑️ ${ids.length} productos eliminados`)
+    showToast('🗑️ Productos eliminados')
   }
 
   const filtered = filterCat === 'todo' ? items : items.filter(i => i.category === filterCat)
@@ -102,12 +116,8 @@ export default function Lista() {
           </div>
         </div>
         <div className={styles.userRow}>
-          <button className={`${styles.userBtn} ${addedBy==='yo'?styles.userActive:''}`} onClick={()=>setAddedBy('yo')}>
-            👤 {nombres.yo}
-          </button>
-          <button className={`${styles.userBtn} ${addedBy==='pareja'?styles.userActive:''}`} onClick={()=>setAddedBy('pareja')}>
-            💑 {nombres.pareja}
-          </button>
+          <button className={`${styles.userBtn} ${addedBy==='yo'?styles.userActive:''}`} onClick={()=>setAddedBy('yo')}>👤 {nombres.yo}</button>
+          <button className={`${styles.userBtn} ${addedBy==='pareja'?styles.userActive:''}`} onClick={()=>setAddedBy('pareja')}>💑 {nombres.pareja}</button>
         </div>
       </header>
 
@@ -158,7 +168,6 @@ export default function Lista() {
             <button className={styles.clearBtn} onClick={clearDone}>🗑️ Vaciar carro</button>
           </div>
         )}
-
         <div style={{height:120}} />
       </main>
 
@@ -193,9 +202,7 @@ function ItemCard({ item, cats, nombres, onToggle, onQty, onDelete }: {
   onToggle:()=>void, onQty:(d:number)=>void, onDelete:()=>void
 }) {
   const cat = cats.find((c:any)=>c.id===item.category)
-  const addedByName = item.added_by === 'yo' ? nombres.yo
-    : item.added_by === 'pareja' ? nombres.pareja
-    : 'menú'
+  const addedByName = item.added_by === 'yo' ? nombres.yo : item.added_by === 'pareja' ? nombres.pareja : 'menú'
   return (
     <div className={`${styles.item} ${item.done?styles.itemDone:''}`}>
       <button className={`${styles.check} ${item.done?styles.checked:''}`}
