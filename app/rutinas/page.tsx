@@ -15,6 +15,7 @@ const DEFAULT: any = {
   email_yo: '',
   email_pareja: '',
   dia_compra: 'Sábado',
+  supermercado: 'mercadona',
 }
 
 function Field({ label, sub, children }: { label: string, sub?: string, children: React.ReactNode }) {
@@ -153,6 +154,16 @@ export default function RutinasPage() {
               <button key={d} className={`${styles.optBtn} ${form.dia_compra===d?styles.optActive:''}`}
                 onClick={()=>setForm((prev: any) => ({...prev, dia_compra: d}))}>{d}</button>
             ))}
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardTitle}>🏪 Supermercado favorito</div>
+          <div className={styles.optRow}>
+            {['mercadona','carrefour','dia','alcampo','elcorteingles'].map((s, i) => {
+              const labels = ['🟢 Mercadona','🔵 Carrefour','🔴 Día','🟡 Alcampo','🟤 El Corte Inglés']
+              return <button key={s} className={`${styles.optBtn} ${form.supermercado===s?styles.optActive:''}`} onClick={()=>setForm((prev: any) => ({...prev, supermercado: s}))}>{labels[i]}</button>
+            })}
           </div>
         </div>
 

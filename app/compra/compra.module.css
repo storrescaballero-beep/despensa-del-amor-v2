@@ -1,0 +1,36 @@
+.page { min-height: 100vh; background: var(--warm); }
+
+.header { padding: 52px 20px 20px; }
+.title { font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 4px; font-family: 'Playfair Display', serif; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 700; }
+
+.main { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+.superCard { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #F5EDE3; }
+.superLabel { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 10px; }
+.superRow { display: flex; flex-wrap: wrap; gap: 8px; }
+.superBtn { padding: 8px 12px; border-radius: 20px; border: 1.5px solid #E8D8C8; background: var(--warm); color: var(--text-mid); font-size: 12px; font-weight: 700; transition: all 0.2s; }
+.superActive { font-weight: 700; }
+
+.section { margin-bottom: 8px; }
+.sectionLabel { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 14px 0 8px; }
+.sectionLine { flex: 1; height: 1px; background: #E8D8C8; }
+
+.item { background: #fff; border-radius: 14px; padding: 13px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; border: 1px solid #F5EDE3; transition: all 0.25s; }
+.itemChecked { opacity: 0.45; }
+.itemChecked .itemNombre { text-decoration: line-through; color: var(--text-light); }
+
+.check { width: 28px; height: 28px; border-radius: 9px; border: 2px solid #E8D8C8; background: var(--warm); display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
+.checked { }
+
+.itemBody { flex: 1; min-width: 0; }
+.itemNombre { font-size: 15px; font-weight: 700; color: var(--text); }
+.itemCantidad { font-size: 12px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+.searchBtn { padding: 7px 12px; border-radius: 10px; border: 1.5px solid; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: all 0.2s; }
+.searchBtn:hover { opacity: 0.8; }
+
+.empty { text-align: center; padding: 52px 24px; }
+.emptyIcon { font-size: 56px; margin-bottom: 12px; }
+.emptyTitle { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text-mid); margin-bottom: 4px; }
+.emptySub { font-size: 14px; color: var(--text-light); font-weight: 600; }

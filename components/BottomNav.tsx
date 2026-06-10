@@ -5,6 +5,7 @@ import styles from './BottomNav.module.css'
 
 const TABS = [
   { href: '/lista',         icon: '🛒', label: 'Lista' },
+  { href: '/compra',        icon: '🏪', label: 'Comprar' },
   { href: '/menu',          icon: '🍽️', label: 'Menú' },
   { href: '/nutricionista', icon: '🥗', label: 'Nuria' },
   { href: '/rutinas',       icon: '⚙️', label: 'Ajustes' },
